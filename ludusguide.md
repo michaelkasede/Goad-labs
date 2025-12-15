@@ -105,13 +105,46 @@ Note: If you get any errors about unmet dependencies - fix them with this comman
 poetry run pip install --upgrade urllib3 chardet charset-normalizer requests
 ```
 
+```sh
+# Ensure you are using a user with the admin role. Export the Goad Admin user API ky and run the Goad script
+# Specify the IP address range to use - 10.x.x, 10.2.10, 10.3.10, 10.4.10 e.t.c
+# Run the GOAD script once to setup the goad.ini configuration file
+./goad.sh -p ludus
 
+exit
+```
+
+### Now you need to edit the goad.ini config file
+
+To use one account for all your lab deployments, change the setting under [ludus] `use_impersonation = no`.
+The value "no" ensures that GOAD uses the user API key exported. Change this value for your desired setup.
+`use_impersonation = yes` will use the admin role of the user API key exported to create a seperate user for each lab the script creates.
 
 ```sh
-# Ensure you are using a user with root/admin role. Export the Goad Admin user API ky and run the Goad script
-# Specify the IP address range to use - 10.x.x, 10.2.10, 10.3.10, 10.4.10 e.t.c
-cd GOAD
-python3 ./goad.sh -p ludus -ip 10.2.10
+[ludus]
+; api key must not have % if you have a % in it, change it by a %%
+ludus_api_key = GA.Xx=xxxxxxxxx=32xxxxxxXXXxxx_xxxxxxxxxx
+use_impersonation = no
+```
+
+Now return to the GOAD script menu. Tip: always exit out of the script menu to make changes to the goad.ini configuration file.
+
+```sh
+# Use the command "exit" to return to the linux shell at any point
+./goad.sh -p ludus
+
+help    # displays commands manual
+
+check   # checks the settings the script will use
+
+status  # displays information about existing ranges
+
+set_lab GOAD    # sets the GOAD lab to deploy. Options: GOAD, GOAD-Light, GOAD-Mini, NHA, SCCM
+
+set_ip_range 10.2.10    # set the first 3 octets of the IP range 10.2.10, 10.3.10 e.t.c
+
+install # deploys a GOAD range
+
 ```
 
 
@@ -231,7 +264,7 @@ To run both GOAD and GOAD-Light simultaneously with a single user:
 export LUDUS_API_KEY='SA.v3gfHmYWIgFh11p+LHhXX+7jsyztP9ddnG%%ulkuw'
 ludus --user SA range config set -f ludus-ranges/sa-config.yml
 
-python goad.py -l GOAD -p ludus -m install
+
 ```
 
 ### Deploy GOAD-Light with user GL:
