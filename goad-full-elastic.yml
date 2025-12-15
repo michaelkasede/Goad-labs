@@ -1,0 +1,103 @@
+ludus:
+  - vm_name: "{{ range_id }}-GOAD-DC01"
+    hostname: "{{ range_id }}-DC01"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 10
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - badsectorlabs.ludus_elastic_agent
+
+  - vm_name: "{{ range_id }}-GOAD-DC02"
+    hostname: "{{ range_id }}-DC02"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 11
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - badsectorlabs.ludus_elastic_agent
+
+  - vm_name: "{{ range_id }}-GOAD-DC03"
+    hostname: "{{ range_id }}-DC03"
+    template: win2016-server-x64-template
+    vlan: 10
+    ip_last_octet: 12
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - badsectorlabs.ludus_elastic_agent
+
+  - vm_name: "{{ range_id }}-GOAD-SRV02"
+    hostname: "{{ range_id }}-SRV02"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 22
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - badsectorlabs.ludus_elastic_agent
+
+  - vm_name: "{{ range_id }}-GOAD-SRV03"
+    hostname: "{{ range_id }}-SRV03"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 23
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - badsectorlabs.ludus_elastic_agent
+
+# Elastic SIEM
+  - vm_name: "{{ range_id }}-elastic"
+    hostname: "{{ range_id }}-elastic"
+    template: debian-12-x64-server-template
+    vlan: 20
+    ip_last_octet: 1
+    ram_gb: 4
+    cpus: 2
+    linux: true
+    testing:
+      snapshot: false
+      block_internet: false
+    roles:
+      - badsectorlabs.ludus_elastic_container
+    role_vars:
+      ludus_elastic_password: "password"
+
+  - vm_name: "{{ range_id }}-debian"
+    hostname: "{{ range_id }}-debian"
+    template: debian-12-x64-server-template
+    vlan: 20
+    ip_last_octet: 20
+    ram_gb: 4
+    cpus: 2
+    linux: true
+    testing:
+      snapshot: false
+      block_internet: false
+    roles:
+      - badsectorlabs.ludus_elastic_agent
+
+  - vm_name: "{{ range_id }}-win11-22h2-enterprise-x64-1"
+    hostname: "{{ range_id }}-WIN11-22H2-1"
+    template: win11-22h2-x64-enterprise-template
+    vlan: 10
+    ip_last_octet: 21
+    ram_gb: 4
+    cpus: 2
+    windows:
+      install_additional_tools: false
+    roles:
+      - badsectorlabs.ludus_elastic_agent
