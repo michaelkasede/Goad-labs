@@ -158,6 +158,10 @@ In this option you do not need to worry about creating a user manually. The GOAD
 export LUDUS_API_KEY='GA.Sw=hWcCFUHs=32Lq8cDGNwtn_O2H-ft1ecRhAwVp'
 ```
 2. Edit the goad.ini configuraiton file. Set user impersonation value to "yes"
+```sh
+# Run command as the root user on your Proxmox host. If not, used sudo
+nano ~/.goad/goad.ini
+```
 
 ```sh
 [ludus]
