@@ -2,7 +2,7 @@
 
 The best setup for GOAD labs in a homelab is on a Mini-PC.
 You can setup GOAD labs in the cloud and on general purpose server hardware for specific usecases.
-This guide is suitable for a homelab and caters to individuals who need to practice and 
+This guide is suitable for a homelab and caters to individuals who need to practice and repeatedly deploy labs for various experiments.
 
 ## Requirements
 
