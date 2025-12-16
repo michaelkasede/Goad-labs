@@ -36,7 +36,7 @@ export LUDUS_API_KEY='ROOT.yJ+vlqUzwzV%8UiWrPmaQiVuV-wwN8JTnenARbTG'
 ludus user add --name "Goad Admin" --userid GA --admin --url https://127.0.0.1:8081
 ```
 If the API key conatins a % - add another % sign to escape the symbol
-Ex: GA.Sw=hWcCFUHs=32Lq8cDGNwtn_O2H%ft1ecRhAwVp -> export LUDUS_API_KEY='GA.Sw=hWcCFUHs=32Lq8cDGNwtn_O2H%%ft1ecRhAwVp'
+This `GA.Sw=hWcCFUHs=32Lq8cDGNwtn_O2H%ft1ecRhAwVp` becomes `GA.Sw=hWcCFUHs=32Lq8cDGNwtn_O2H%%ft1ecRhAwVp`
 
 Save the admin user's API key. Export it as a variable
 ```sh
