@@ -145,8 +145,8 @@ set_lab GOAD    # sets the GOAD lab to deploy. Options: GOAD, GOAD-Light, GOAD-M
 set_ip_range 10.2.10    # set the first 3 octets of the IP range 10.2.10, 10.3.10 e.t.c
 
 install # deploys a GOAD range
-
 ```
+
 ### Option B: Create a different user for a every GOAD Range using the GOAD Script
 
 In this option you do not need to worry about creating a user manually. The GOAD Script will do it for you.
@@ -178,7 +178,6 @@ set_lab GOAD-Light   # sets the GOAD lab to deploy. Options: GOAD, GOAD-Light, G
 set_ip_range 10.2.10    # set the first 3 octets of the IP range 10.2.10, 10.3.10 e.t.c
 
 install # deploys a GOAD range
-
 ```
 
 ## Method 2: Creating GOAD Ranges with seperate accounts manually created using ludus
@@ -233,7 +232,6 @@ status  # displays information about existing ranges
 set_lab GOAD-Light   # sets the GOAD lab to deploy. Options: GOAD, GOAD-Light, GOAD-Mini, NHA, SCCM
 
 install # deploys a GOAD range
-
 ```
 
 ### :warning: If you encounter issues with a lab deploying 
@@ -252,7 +250,6 @@ load    # load the desired lab
 destroy  # destroy the lab
 
 exit
-
 ```
 ### Repeat steps 2 and 3 above.
 
@@ -273,7 +270,6 @@ help    # list commands
 list_extensions  # display available extensions
 
 install_extension elk   # install Elastic SIEM extension
-
 ```
 
 ## Manage Ranges Using Ludus
@@ -287,10 +283,6 @@ ludus users list all    # view created users
 ludus range list
 
 ludus range status
-
-
-
-
 ```
 
 ## Monitoring Deployments
