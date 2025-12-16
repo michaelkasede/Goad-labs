@@ -117,6 +117,10 @@ exit
 To use one account for all your lab deployments, change the setting under [ludus] `use_impersonation = no`.
 The value "no" ensures that GOAD uses the user API key exported. Change this value for your desired setup.
 `use_impersonation = yes` will use the admin role of the user API key exported to create a seperate user for each lab the script creates.
+```sh
+# Run command as the root user on your Proxmox host. If not, used sudo
+nano ~/.goad/goad.ini
+```
 
 ```sh
 [ludus]
@@ -145,7 +149,7 @@ set_ip_range 10.2.10    # set the first 3 octets of the IP range 10.2.10, 10.3.1
 install # deploys a GOAD range
 ```
 
-### Option B: Create a different user for a every GOAD Range using the GOAD Script
+### Option B: Create a different user for every GOAD Range using the GOAD Script
 
 In this option you do not need to worry about creating a user manually. The GOAD Script will do it for you.
 
