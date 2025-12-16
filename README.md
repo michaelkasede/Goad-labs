@@ -23,15 +23,13 @@ chmod +x install.sh
 ./install.sh
 ```
 
-Create a user
-Ludus creates a root user
-- get the Root user API key
+Ludus creates a root user. Obtain the API key using the command below.
 ```sh
 ludus-install-status
 # Ouput
 Root API key: ROOT.yJ+vlqUzwzV%8UiWrPmaQiVuV-wwN8JTnenARbTG
 ```
-Create Goad Admin user
+Create another user and assign that user an admin role - Goad Admin user
 ```sh
 export LUDUS_API_KEY='ROOT.yJ+vlqUzwzV%8UiWrPmaQiVuV-wwN8JTnenARbTG'
 
