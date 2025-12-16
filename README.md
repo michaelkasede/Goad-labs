@@ -16,7 +16,7 @@ This guide is suitable for a homelab and caters to individuals who need to pract
 
 ## Step 1: Install Ludus
 Install Ludus on Proxmox
-```sh
+```yml
 # Use root privileges
 curl -s https://ludus.cloud/install | bash
 chmod +x install.sh
