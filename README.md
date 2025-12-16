@@ -16,7 +16,7 @@ This guide is suitable for a homelab and caters to individuals who need to pract
 
 ## Step 1: Install Ludus
 Install Ludus on Proxmox
-```yml
+```sh
 # Use root privileges
 curl -s https://ludus.cloud/install | bash
 chmod +x install.sh
@@ -70,7 +70,7 @@ Wait for templates to build
 # In another terminal check progress
 ludus templates list
 ```
-Note:
+NOTE:
 - You can edit the templates created in Proxmox to customize the VM specifications.
 - You want to limit the VM resources to what your proxmox server can accomodate.
 - Give the VMs 4GB RAM, 2 vCPU if you have minimum 32GB RAM and 8 vCPU
@@ -100,7 +100,7 @@ source $(poetry env info --path)/bin/activate
 poetry install
 ```
 
-Note: If you get any errors about unmet dependencies - fix them with this command replacing the packages with what is provided in the output
+NOTE: If you get any errors about unmet dependencies - fix them with this command replacing the packages with what is provided in the output
 
 ```sh
 poetry run pip install --upgrade urllib3 chardet charset-normalizer requests
@@ -186,145 +186,146 @@ install # deploys a GOAD range
 You can deploy multiple ranges by creating a user for each range to isolate them. The only advantage I see with this is customizing the lab name. A typical lab name looks like this: GOADae34e, GOADLightad34e.
 You can create a user called "John Doe" with the user-id JD. The lab name will be JD-ae34e
 
-At this point you can create another user to deploy your GOAD lab specifically for that user or use the first user you created.
-
 NOTE: The subsequent users you create to deploy labs do not need to have the admin role. 
 *(Keep in mind, you do not need to create a different user for each lab. Keep things simple and repeatable.)*
 
 1. Create a basic user without the admin role for each range.
  
 ```sh
+# Record your API keys in a text file to refer to them
 ludus user add -n 'GOAD Full' -i GOADFULL --url https://127.0.0.1:8081
 
+ludus user add -n 'GOAD Light' -i GOADLIGHT --url https://127.0.0.1:8081
+
 ```
 
-2. Export the user API key before running ludus commands every time you're creating an isolated lab.
-*Record your API keys in a text file to refer to them easily.*
-Note: Sometimes the user the GOAD Script uses may not change from the previous time you run the script.
+2. Export each user's API key before running the GOAD Script commands each time you're creating an isolated lab.
+
+```sh
+export LUDUS_API_KEY='GOADLIGHT.7QWRe4cKmcz9HGgi+Gid1j5ZCs=bLE0Eo@kNtXtr'
+
+```
+The GOAD Script should use the user whose API key is exported. Export a different API key this for each range/lab you need to create.
+NOTE: Sometimes the user the GOAD Script uses may not change from the previous time you run the script.
 Always confirm by running the check command before installing a range.
 
+To ensure you are using the correct user when you run the script, you can add that user's API key directly into the goad.ini configuration file. Example: `GA.Xx=xxxxxxxxx=32xxxxxxXXXxxx_xxxxxxxxxx`.
+
+Make sure the value for `use_impersonation` is set to "no".
+
 ```sh
-export LUDUS_API_KEY='GOADFULL.7QWRe4cKmcz9HGgi+Gid1j5ZCs=bLE0Eo@kNtXtr'
+[ludus]
+; api key must not have % if you have a % in it, change it by a %%
+ludus_api_key = GOADLIGHT.Xx=xxxxxxxxx=32xxxxxxXXXxxx_xxxxxxxxxx
+use_impersonation = no
+```
+3. Now run the GOAD Script
+No need to set the lab IP range. The script handles this automatically.
+
+```sh
+# Use the command "exit" to return to the linux shell at any point
+./goad.sh -p ludus
+
+check   # checks the settings the script will use
+
+status  # displays information about existing ranges
+
+set_lab GOAD-Light   # sets the GOAD lab to deploy. Options: GOAD, GOAD-Light, GOAD-Mini, NHA, SCCM
+
+install # deploys a GOAD range
 
 ```
 
+### :warning: If you encounter issues with a lab deploying 
 
+You can destroy the lab and create it again. The deployment has to run untill it finishes and tells you if anything failed.
 
-### Script Extensions: Create GOAD Full + Elastic SIEM
+NOTE: You need to switch to the admin user to manage the ranges. Export the admin user's API key and run the GOAD Script. 
+Use the commands `load` to enter into the desired lab context and `unload` to get out of a lab context.
 
-
-1. Get the GOAD range config
 ```sh
-ludus --user GOADFULL range config get > goad-full-config.yml
+# Use the command "exit" to return to the linux shell at any point
+./goad.sh -p ludus
+
+load    # load the desired lab 
+
+destroy  # destroy the lab
+
+exit
 
 ```
-The range config defines the lab specifications. You can edit the config and add Elastic, Kali e.t.c. Then set the config for ludus to provision.
+### Repeat steps 2 and 3 above.
 
+
+## Script Extensions: Create GOAD Full + Elastic SIEM
+
+The GOAD Script will handle this automatically. You just install the preferred extension in the desired lab and run
+
+![alt text](image.png)
 ```sh
-ludus --user GOADFULL range config set -f goad-full-config.yml
-ludus --user GOADFULL range deploy
+# Use the command "exit" to return to the linux shell at any point
+./goad.sh -p ludus
 
-# You cam monitor the lab deployment using:
-ludus --user GOADFULL range logs -f
-```
-2. Add ansible playbooks for Elastic SIEM
-```sh
-ludus ansible roles add badsectorlabs.ludus_elastic_container
-ludus ansible roles add badsectorlabs.ludus_elastic_agent
-```
+load    # load the desired lab 
 
-2. Edit the range config file
-```sh
-# Note: Edit the range config file to add specifications for Elastic SIEM. You have to add the "ludus_elastic_agent" role to all VMs
-ludus --user GOADFULL range config get > goad-full-elastic.yml
-ludus --user GOADFULL range config set -f goad-full-elastic.yml
-```
+help    # list commands
 
-## Method 2 - GOAD Script: Orange CyberDefense GOAD create users automatically
+list_extensions  # display available extensions
 
-### Step 1: 
-## Deploying GOAD-Light (3 VMs)
-
-### Option A: Create two GOAD Labs running simulteneously but isolated - you need to have 2 users
-1. The GOAD Script provides an interactive menu to create GOAD Labs using ludus under the hood. You only need to have one account with the admin role created with ludus.
-2. Make sure to edit the ~/.goad/goad.ini config. 
-
-```sh
+install_extension elk   # install Elastic SIEM extension
 
 ```
 
+## Manage Ranges Using Ludus
+
+### Switch to the user with the admin role
 ```sh
-ludus user add -n 'GOAD Lite' -i GOADLITE --url https://127.0.0.1:8081
+export LUDUS_API_KEY='GA.v3gfHmYWIgFh11p+LHhXX+7jsyztP9ddnG%%ulkuw'
 
-```
-Export the GOAD Admin user API key
+ludus users list all    # view created users
 
-```sh
-export LUDUS_API_KEY='GA.xxxxxxxxxxxxxxxxxxxxxxx'
-python goad.py -l GOADLITE -p ludus -m install
-```
+ludus range list
 
-## Accessing Multiple Ranges with one user account (should have the admin role)
+ludus range status
 
-To run both GOAD and GOAD-Light simultaneously with a single user:
 
-### Deploy GOAD with user SA:
-```sh
-export LUDUS_API_KEY='SA.v3gfHmYWIgFh11p+LHhXX+7jsyztP9ddnG%%ulkuw'
-ludus --user SA range config set -f ludus-ranges/sa-config.yml
 
 
 ```
 
-### Deploy GOAD-Light with user GL:
-```sh
-export LUDUS_API_KEY='GL.QmMj@HsTLJjuqV_-JDBm_oevurdH+c92A6KOgzuj'
-ludus --user GL range config set -f ludus-ranges/gl-config.yml
-python goad.py -l GOAD-Light -p ludus -m install
-```
+## Monitoring Deployments
 
-## Monitoring Deployment
-
-Watch the deployment logs:
+Watch the deployment logs in a separate terminal:
 ```sh
-ludus --user SA range logs -f   # For SA user
-ludus --user GL range logs -f   # For GL user
+ludus --user GOADFULL range logs -f # Use the user ID to specify the user 
 ```
 
 Check range status:
 ```sh
-ludus --user SA range status
-ludus --user GL range status
+ludus --user GOADFULL range status
 ```
 
 ## Post-Deployment
 
-### Take Snapshots
+Take Snapshots
 ```sh
-ludus --user SA range snapshot -n "clean-install"
-ludus --user GL range snapshot -n "clean-install"
+ludus --user GOADFULL range snapshot -n "clean-install"
+
+ludus --user GOADLIGHT range snapshot -n "clean-install"
 ```
 
-### Access the Lab
-Connect via WireGuard, then access:
-- GOAD network: `10.RANGENUMBER.10.X`
-- Kali (if deployed): `https://10.RANGENUMBER.10.99:8444` (kali:password)
-
-## Lab Specs
-
-| Lab | VMs | Forests | Domains | RAM Required |
-|-----|-----|---------|---------|--------------|
-| GOAD | 5 | 2 | 3 | ~24GB |
-| GOAD-Light | 3 | 1 | 2 | ~16GB |
 
 ## Troubleshooting
 
+### Having DNS Errors? 
+
 If DNS errors occur during provisioning:
-```powershell
+```sh
 # On affected VM, remove the 10.ID.10.254 DNS entry
 Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses @("10.X.10.1")
 ```
-## Removing Wireguard
+
+### Removing Wireguard if you ever need to reinstall it. For example if you need to remove ludus and reinstall it.
 
 ```sh
  wg-quick down wg0
@@ -336,12 +337,12 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses @("10.X.1
 
  ```
 
- ## Remove a user's range
+ ### Remove a user's range
+NOTE: Use the GOAD Script to remove ranges created by the script. You can clean up the ludus database by removing users created by the script.
+```sh
+ludus users list all    # Obtain user-IDs
 
-ludus range rm --user GOADFULL
-
-ludus range rm --user GOADLITE
+ludus user rm -i GOADFULL --url https://127.0.0.1:8081  # remove user with user-ID -i 
 
 ludus user rm -i GOADFULL --url https://127.0.0.1:8081
-
-ludus user rm -i GOADFULL --url https://127.0.0.1:8081
+```
