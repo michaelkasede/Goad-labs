@@ -1,8 +1,5 @@
-<p align="center">
- <img alt="Static Badge" src="https://img.shields.io/badge/Proxmox-8.0%2B-%23E57000">
 
- [![Static Badge](https://img.shields.io/badge/Ludus-docs-%23d7ac33)](https://docs.ludus.cloud/docs/category/quick-start)
-</p>
+
 ## Deploying GOAD Labs with Ludus on Proxmox
 
 The best setup for GOAD labs in a homelab is on a Mini-PC.
@@ -11,7 +8,7 @@ This guide is suitable for a homelab and caters to individuals who need to pract
 
 ## Requirements
 
-1. Proxmox server resources: (Only tested on Proxmox 8.4.4 and 8.4.14)
+1. Proxmox server resources:
 - Storage 500GB+ , 1TB (Recommended)
 - 8 Cores minimum, more is better (to run multiple labs simulteneously)
 - 32GB RAM minimum
