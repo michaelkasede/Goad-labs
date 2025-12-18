@@ -1,7 +1,7 @@
-<p align="center">
+
  ![Static Badge](https://img.shields.io/badge/Proxmox-8.0%2B-%23E57000)
  [![Static Badge](https://img.shields.io/badge/Ludus-docs-%23d7ac33)](https://docs.ludus.cloud/docs/category/quick-start)
-</p>
+
 ## Deploying GOAD Labs with Ludus on Proxmox
 
 The best setup for GOAD labs in a homelab is on a Mini-PC.
