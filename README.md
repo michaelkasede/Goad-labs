@@ -214,13 +214,13 @@ ludus user add -n 'GOAD Light' -i GOADLIGHT --url https://127.0.0.1:8081
 export LUDUS_API_KEY='GOADLIGHT.7QWRe4cKmcz9HGgi+Gid1j5ZCs=bLE0Eo@kNtXtr'
 
 ```
-The GOAD Script should use the user whose API key is exported. Export a different API key this for each range/lab you need to create.
+The GOAD Script should use the user whose API key is exported. Export a different API key for each range/lab you need to create.
 NOTE: Sometimes the user the GOAD Script uses may not change from the previous time you run the script.
 Always confirm by running the check command before installing a range.
 
 To ensure you are using the correct user when you run the script, you can add that user's API key directly into the goad.ini configuration file. Example: `GA.Xx=xxxxxxxxx=32xxxxxxXXXxxx_xxxxxxxxxx`.
 
-Make sure the value for `use_impersonation` is set to "no".
+Also set the value for `use_impersonation` to "no" in the goad.ini config file.
 
 ```sh
 [ludus]
@@ -264,7 +264,8 @@ exit
 ### Repeat steps 2 and 3 above.
 
 
-## Script Extensions: Create GOAD Full + Elastic SIEM
+## Step 3: GOAD Script Extensions - Create GOAD Full + Elastic SIEM
+The Elastic SIEM uses the Debian 12 template. Check if it exists.
 
 The GOAD Script will handle this automatically. You just install the preferred extension in the desired lab and run
 
@@ -282,18 +283,7 @@ list_extensions  # display available extensions
 install_extension elk   # install Elastic SIEM extension
 ```
 
-## Manage Ranges Using Ludus
 
-### Switch to the user with the admin role
-```sh
-export LUDUS_API_KEY='GA.v3gfHmYWIgFh11p+LHhXX+7jsyztP9ddnG%%ulkuw'
-
-ludus users list all    # view created users
-
-ludus range list
-
-ludus range status
-```
 
 ## Monitoring Deployments
 
@@ -316,8 +306,11 @@ ludus --user GOADFULL range snapshot -n "clean-install"
 ludus --user GOADLIGHT range snapshot -n "clean-install"
 ```
 
+## Step 4: Setup Wireguard to Access the Range
 
-## Troubleshooting
+
+
+## Step 5: Troubleshooting
 
 ### Having DNS Errors? 
 
@@ -327,7 +320,33 @@ If DNS errors occur during provisioning:
 Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses @("10.X.10.1")
 ```
 
-### Removing Wireguard if you ever need to reinstall it. For example if you need to remove ludus and reinstall it.
+### Managing a Range/Lab
+Manage the range instances using the GOAD Script. You can Stop, Start or Destroy a range. Since I had limited resources on my Proxmox server, I ran a single range at a time.
+NOTE: Use the GOAD Script to remove ranges created by the script. 
+After you destroy a range, you can clean up the ludus database by removing users created by the script.
+
+```sh
+./goad.sh -p ludus
+
+load    # load the desired lab 
+
+destroy 
+```
+
+## Managing Users with Ludus
+
+### Switch to the user with the admin role
+```sh
+export LUDUS_API_KEY='GA.v3gfHmYWIgFh11p+LHhXX+7jsyztP9ddnG%%ulkuw'
+
+ludus users list all    # view created users
+
+ludus user rm -i GOADFULL --url https://127.0.0.1:8081  # remove user with user-ID GOADFULL
+
+ludus user rm -i GOADFULL --url https://127.0.0.1:8081
+```
+
+### Removing Wireguard if you ever need to reinstall it. For example, if you need to remove ludus and reinstall it.
 
 ```sh
  wg-quick down wg0
@@ -338,13 +357,3 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses @("10.X.1
  apt remove wireguard wireguard-tools
 
  ```
-
- ### Remove a user's range
-NOTE: Use the GOAD Script to remove ranges created by the script. You can clean up the ludus database by removing users created by the script.
-```sh
-ludus users list all    # Obtain user-IDs
-
-ludus user rm -i GOADFULL --url https://127.0.0.1:8081  # remove user with user-ID -i 
-
-ludus user rm -i GOADFULL --url https://127.0.0.1:8081
-```
